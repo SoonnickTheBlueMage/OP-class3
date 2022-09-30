@@ -62,9 +62,47 @@ public class Tests
         var ace = new Card(Suit.Hearts, Rank.Ace);
         Dictionary<Player, List<Card>> hands = new Dictionary<Player, List<Card>>
         {
-            { Player.First, new List<Card> {new Card(Suit.Diamonds,Rank.Six)} },
-            { Player.Second, new List<Card> {new Card(Suit.Hearts, Rank.Ace)} }
+            { Player.First, new List<Card> {six} },
+            { Player.Second, new List<Card> {ace} }
         };
+        var gameWinner = Game(hands);
+        That(gameWinner, Is.EqualTo(Player.Second));
+    }
+
+    [Test]
+    public void FastSecondWinTest()
+    {
+        var firstHand = new List<Card>();
+        var secondHand = new List<Card>();
+
+        var i = true;
+        foreach (Rank rank in Enum.GetValues(typeof(Rank)))
+        {
+            if (i)
+            {
+                i = false;
+                firstHand.Add(new Card(Suit.Hearts, rank));
+            }
+            else
+            {
+                i = true;
+                secondHand.Add(new Card(Suit.Clubs, rank));
+            }
+        }
+
+        firstHand.Remove(new Card(Suit.Hearts, Rank.Ace));
+        
+        Dictionary<Player, List<Card>> hands = new Dictionary<Player, List<Card>>
+        {
+            { Player.First, firstHand },
+            { Player.Second, secondHand }
+        };
+        
+        /*
+         * first has:   6 8 10 Q
+         * second nas:  7 9 J  K
+         */
+        
         var gameWinner = Game(hands);
         That(gameWinner, Is.EqualTo(Player.Second));
     }
